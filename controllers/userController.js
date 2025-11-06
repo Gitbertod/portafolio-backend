@@ -21,11 +21,29 @@ export const createUser = async (req, res) => {
 
         res.status(200).json({
             status: "Success!",
-            message:"User has been created",
+            message: "User has been created",
             data: user
 
         })
     } catch (error) {
-        data: error.m
+        data: error
     }
+}
+
+export const deleteUser = async (req, res) => {
+    
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({
+            status:"Success",
+            message:"User has been deleted"
+        })
+        
+    } catch (error) {
+        res.status(400).json({
+            status:"fail",
+            message:error
+        })
+    }
+
 }
