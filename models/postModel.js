@@ -2,7 +2,9 @@ import mongoose from 'mongoose';
 
 const postSchema = new mongoose.Schema({
     user:{
-        type:String
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        required:[true,"El post debe pertenecer a un usuario"]
     },
     title:{
         type:String,
@@ -12,6 +14,6 @@ const postSchema = new mongoose.Schema({
         type:String,
         required:[true,"Ingrese un texto al post" ]
     }
-})
+},{timestamps:true})
 
 export default mongoose.model('Post',postSchema)

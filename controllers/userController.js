@@ -47,3 +47,21 @@ export const deleteUser = async (req, res) => {
     }
 
 }
+
+export const editUser = async (req,res)=>{
+    const user = await User.findByIdAndUpdate(req.params.id, req.body,{
+        new:true,
+        runValidators: true
+    }) 
+    try {
+        res.status(200).json({
+            status:"Success",
+            message:"User has been edited",
+            data: user
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: "Fail"
+        })
+    }
+}

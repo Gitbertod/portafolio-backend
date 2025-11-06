@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
     name:{
         type:String,
+        required:true,
         maxlength:[15],
         minlength:[3]
     },
@@ -25,6 +26,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:[true,'Por favor ingresa un password']
     }
-})
+},{timestamps: true})
 
 export default mongoose.model('User',userSchema)
