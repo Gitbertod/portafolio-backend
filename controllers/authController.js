@@ -1,30 +1,31 @@
 import User from "../models/userModel.js";
 import jwt from 'jsonwebtoken';
 import { AppError } from "../utils/AppError.js";
+import { catchAsync } from "../utils/catchAsync.js";
 
 
-export const signUp = async (req, res) => {
+export const signUp = catchAsync(async (req, res, next) => {
 
     const newUser = await User.create({
         name: req.body.name,
         last: req.body.last,
         email: req.body.email,
         password: req.body.password,
-        passwordConfirm: req.body.password
+        passwordConfirm: req.body.passwordConfirm
     })
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN })
 
 
-    res.status(200).json({
+    res.status(201).json({
         status: 'success',
         token,
         data: {
             user: newUser
         }
     })
-}
+})
 
-export const login = async (req, res, next) => {
+export const login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -36,4 +37,4 @@ export const login = async (req, res, next) => {
         return next(new AppError('Incorrect email or password', 401))
     }
 
-}
+})
