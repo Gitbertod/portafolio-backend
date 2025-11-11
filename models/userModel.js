@@ -15,8 +15,9 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: [true, "El usuario debe tener email"],
-        validate:[validator.isEmail,"Ingrese un email valido "]
+        validate: [validator.isEmail, "Ingrese un email valido "]
     },
     picture: {
         type: String
@@ -30,8 +31,8 @@ const userSchema = new mongoose.Schema({
     passwordConfirm: {
         type: String,
         required: [true, 'Por favor ingresa un password'],
-        validate:{
-            validator:function (el){
+        validate: {
+            validator: function (el) {
                 return el === this.password;
             },
             message: 'Password are not the same!'
@@ -45,7 +46,12 @@ userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()
 
     this.password = await bcrypt.hash(this.password, 12);
-    this.passwordConfirm = undefined
+    this.passwordConfirm = undefined;
+    next();
 })
+
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+}
 
 export default mongoose.model('User', userSchema)
