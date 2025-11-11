@@ -1,83 +1,51 @@
 import User from "../models/userModel.js"
+import { catchAsync } from "../utils/catchAsync.js"
 
-export const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find()
-        res.status(200).json({
-            status: "success",
-            data: users
-        })
-    } catch (error) {
-        res.status(404).json({
-            status: "fail",
-            data: error
-        })
-    }
-}
+export const getAllUsers = catchAsync(async (req, res, next) => {
+    const users = await User.find()
+    res.status(200).json({
+        status: "success",
+        data: users
+    })
+})
 
-export const getUserDetail = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id)
-        res.status(200).json({
-            status: "Success",
-            data: user
-        })
+export const getUserDetail = catchAsync(async (req, res, next) => {
 
-    } catch (error) {
-        res.status(404).json({
-            status: "fail",
-            message: error.message
-        })
-    }
-}
+    const user = await User.findById(req.params.id)
+    res.status(200).json({
+        status: "Success",
+        data: user
+    })
+})
 
-export const createUser = async (req, res) => {
-    try {
-        const user = await User.create(req.body);
+export const createUser = catchAsync(async (req, res,next) => {
 
-        res.status(200).json({
-            status: "Success!",
-            message: "User has been created",
-            data: user
+    const user = await User.create(req.body);
+    res.status(200).json({
+        status: "Success!",
+        message: "User has been created",
+        data: user
 
-        })
-    } catch (error) {
-        data: error
-    }
-}
+    })
+})
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = catchAsync(async (req, res,next) => {
 
-    try {
-        await User.findByIdAndDelete(req.params.id);
-        res.status(200).json({
-            status: "Success",
-            message: "User has been deleted"
-        })
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+        status: "Success",
+        message: "User has been deleted"
+    })
+})
 
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error
-        })
-    }
-
-}
-
-export const editUser = async (req, res) => {
+export const editUser = catchAsync(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
     })
-    try {
-        res.status(200).json({
-            status: "Success",
-            message: "User has been edited",
-            data: user
-        })
-    } catch (error) {
-        res.status(400).json({
-            status: "Fail"
-        })
-    }
-}
+    res.status(200).json({
+        status: "Success",
+        message: "User has been edited",
+        data: user
+    })
+})
