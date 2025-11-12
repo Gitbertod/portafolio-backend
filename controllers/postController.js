@@ -1,5 +1,6 @@
 import Post from "../models/postModel.js"
-import {catchAsync} from "../utils/catchAsync.js"
+import { AppError } from "../utils/AppError.js"
+import { catchAsync } from "../utils/catchAsync.js"
 
 export const getAllPosts = catchAsync(async (req, res) => {
 
@@ -11,9 +12,13 @@ export const getAllPosts = catchAsync(async (req, res) => {
 
 })
 
-export const getPostDetail = catchAsync(async (req, res) => {
-
+export const getPostDetail = catchAsync(async (req, res, next) => {
     const postById = await Post.findById(req.params.id).populate('user', "name last email")
+
+    if (!postById) {
+        return next(new AppError('No se encontro el post con ese ID', 404))
+    }
+
     res.status(200).json({
         status: "Success",
         message: "El post ha sido encontrado",

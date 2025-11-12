@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import jwt from 'jsonwebtoken';
+import { promisify } from 'util'
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync.js";
 
@@ -60,12 +61,15 @@ export const protect = catchAsync(async (req, res, next) => {
         req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(" ")[1];
     }
-    console.log(token)
+    
 
-    if(!token){
-        return next(new AppError("No estas logueado, porfavor haz login para tener acceso", 401)) 
+    if (!token) {
+        return next(new AppError("No estas logueado, porfavor haz login para tener acceso", 401))
     }
-    //2) Verificacion del token 
+    //2) Verificacion del token si es válido o si ya caducó
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+    console.log(decoded)
+
 
     //3) Chequear si el usuario existe
 
