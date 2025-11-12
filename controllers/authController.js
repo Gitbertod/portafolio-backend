@@ -51,3 +51,25 @@ export const login = catchAsync(async (req, res, next) => {
         token
     });
 })
+
+//Middleware para proteger rutas
+export const protect = catchAsync(async (req, res, next) => {
+    //1) obtener el token y chequearlo
+    let token;
+    if (req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+    console.log(token)
+
+    if(!token){
+        return next(new AppError("No estas logueado, porfavor haz login para tener acceso", 401)) 
+    }
+    //2) Verificacion del token 
+
+    //3) Chequear si el usuario existe
+
+    //4)validar si el usuario cambio el password despues que fue enviado el token
+
+    next();
+})
